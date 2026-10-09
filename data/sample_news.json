@@ -1,0 +1,58 @@
+[
+  {
+    "source": "Local demo data",
+    "title": "Sanctions and shipping disruption pressure Exxon and Chevron operations",
+    "text": "New sanctions and renewed conflict near a key shipping route raised concern about energy supply disruption. Analysts said Exxon Mobil and Chevron could face higher operating costs if restrictions continue, while broader equity markets declined on geopolitical risk.",
+    "url": "local://demo/geopolitical-energy",
+    "published_at": "2026-10-09T09:00:00Z"
+  },
+  {
+    "source": "Local demo data",
+    "title": "Bank of America loan portfolio hit by credit losses and downgrade risk",
+    "text": "Bank of America disclosed higher credit losses in its commercial loan portfolio as several borrowers moved closer to default. Rating agencies warned that a downgrade could follow if debt restructuring and insolvency cases increase next quarter.",
+    "url": "local://demo/credit-bank",
+    "published_at": "2026-10-09T09:15:00Z"
+  },
+  {
+    "source": "Local demo data",
+    "title": "Fed signals rates may stay elevated as inflation remains sticky",
+    "text": "The Federal Reserve indicated that interest rates may remain elevated after inflation data came in above expectations. Economists said slower GDP growth and recession concerns could weigh on equities, bonds and loan demand.",
+    "url": "local://demo/macro-fed",
+    "published_at": "2026-10-09T09:30:00Z"
+  },
+  {
+    "source": "Local demo data",
+    "title": "NVIDIA shares rose after revenue beat and stronger guidance",
+    "text": "NVIDIA reported quarterly revenue above analyst expectations and issued stronger guidance for data center demand. Profit margins improved and shares rose in early trading after the earnings release.",
+    "url": "local://demo/earnings-nvidia",
+    "published_at": "2026-10-09T09:45:00Z"
+  },
+  {
+    "source": "Local demo data",
+    "title": "Apple unveils new iPhone lineup with improved on-device features",
+    "text": "Apple announced a new product launch for its latest iPhone lineup. The company said supply availability is stable and early demand indicators are positive, though analysts remain cautious on pricing pressure.",
+    "url": "local://demo/product-apple",
+    "published_at": "2026-10-09T10:00:00Z"
+  },
+  {
+    "source": "Local demo data",
+    "title": "Regulators open antitrust investigation into Amazon marketplace practices",
+    "text": "Regulators opened an antitrust investigation into Amazon's marketplace practices and could seek a fine or operational restrictions. The company said it would cooperate with the investigation and contest any lawsuit.",
+    "url": "local://demo/regulatory-amazon",
+    "published_at": "2026-10-09T10:15:00Z"
+  },
+  {
+    "source": "Local demo data",
+    "title": "Microsoft outage disrupts cloud services for corporate customers",
+    "text": "Microsoft said a cloud outage disrupted service for some corporate customers. The company identified a network configuration issue and said no data breach had been found, but operational risk teams continued to monitor recovery.",
+    "url": "local://demo/operational-microsoft",
+    "published_at": "2026-10-09T10:30:00Z"
+  },
+  {
+    "source": "Local demo data",
+    "title": "JPMorgan acquires regional payments platform to expand commercial banking",
+    "text": "JPMorgan announced an acquisition of a regional payments platform, expanding its commercial banking services. The merger is expected to close after regulatory review and is not expected to materially change capital levels.",
+    "url": "local://demo/ma-jpm",
+    "published_at": "2026-10-09T10:45:00Z"
+  }
+]

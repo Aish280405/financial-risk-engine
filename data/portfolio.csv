@@ -1,0 +1,7 @@
+asset_id,asset_name,asset_type,sector,value,region,sensitivity
+L001,Large Corporate Loan Book,loan,Diversified,25000000,US,credit_spread
+B001,Investment Grade Bond Portfolio,bond,Diversified,20000000,US,rates_credit
+B002,High Yield Bond Portfolio,bond,Diversified,15000000,US,credit_spread
+E001,S&P 500 Equity Basket,equity,Diversified,20000000,US,equity_beta
+E002,Energy Equity Basket,equity,Energy,10000000,Global,oil_geopolitical
+D001,Interest Rate Swap Portfolio,derivative,Rates,10000000,US,rates
