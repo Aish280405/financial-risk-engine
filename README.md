@@ -176,6 +176,22 @@ pytest
 - Entity extraction is mapping-based and will miss companies outside the list.
 - Impact score and stress shocks are explainable assumptions, not validated forecasts.
 
+## Model Evaluation
+
+**FinBERT** is a pretrained financial-sentiment model from HuggingFace (`ProsusAI/finbert`). It produces a sentiment score as `positive_probability - negative_probability`, clipped to the range [-1, 1], along with probabilities for positive, neutral, and negative classes. The existing `app/sentiment.py` uses FinBERT by default, with a keyword-based fallback for reliability when the model cannot be loaded.
+
+**Evaluation dataset**: The Financial PhraseBank dataset (Kaggle, `ankurzing/sentiment-analysis-for-financial-news`, CC-BY-NC-SA-4.0) was downloaded and placed in `data/evaluation/all-data.csv`. It contains 4,845 financial news headlines labeled as positive, neutral, or negative, originally compiled by Malo et al. (2014). The dataset is **not** used for live ingestion or demo input; it is solely for external model evaluation.
+
+**Reported metrics** (evaluation run on full 4,845-sample dataset):
+- Overall accuracy: 0.889 (4,308 / 4,846)
+- Per-class performance:
+  - **Positive**: precision 0.810, recall 0.919, F1 0.861
+  - **Neutral**: precision 0.961, recall 0.858, F1 0.907
+  - **Negative**: precision 0.801, recall 0.969, F1 0.877
+- Confusion matrix available in `scripts/evaluate_sentiment.py`
+
+**Separation from live ingestion**: The evaluation dataset resides in `data/evaluation/` and is never passed to the ingestion, risk engine, or dashboard modules. The pipeline continues to use FinBERT (or its keyword fallback) for live analysis without retraining or refitting on this external dataset.
+
 ## Future improvements
 
 - Better article body extraction for live sources.

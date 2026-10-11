@@ -2,12 +2,13 @@ from __future__ import annotations
 from pathlib import Path
 import sys
 
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 import pandas as pd
 import streamlit as st
 from dotenv import load_dotenv
-
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.append(str(ROOT))
 
 from app.ingestion import get_articles, load_local_sample
 from app.risk_engine import analyze_article, analyze_many
@@ -18,10 +19,9 @@ load_dotenv()
 st.set_page_config(page_title="Financial Risk Intelligence Engine", layout="wide")
 st.markdown("""
 <style>
-body, .stApp { background-color: #f7f8fa; color: #17202a; }
+/* Theme comes from .streamlit/config.toml (light theme).
+   Only light touch-ups here — no aggressive overrides. */
 .block-container { padding-top: 1.5rem; }
-.metric-box { background: white; border: 1px solid #e2e5e9; padding: 0.8rem; }
-.small-note { color: #5d6773; font-size: 0.9rem; }
 </style>
 """, unsafe_allow_html=True)
 

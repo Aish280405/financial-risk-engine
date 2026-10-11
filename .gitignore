@@ -7,3 +7,4 @@ venv/
 .streamlit/
 .DS_Store
 *.log
+.docs
