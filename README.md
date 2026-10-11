@@ -1,190 +1,120 @@
-# Financial Risk Intelligence Engine
+# [Project Title] - S&P Global & Crisil Campus Hackathon
 
-Hackathon prototype for Module B: strategic portfolio stress testing. The app converts unstructured market/news text into structured risk signals and uses those signals to run an illustrative portfolio stress test.
+**Candidate Name:** Aishwarya Sinha
+**College Email ID:** aishwarya.23fe10cai00591@muj.manipal.edu
+**College / Campus:** Manipal University Jaipur
+**Demo Video Link:** [YouTube / Unlisted]
+**Slide Deck Link (if hosted externally):**
 
-This is not a trading system and does not provide financial advice. Impact scores are explainable heuristics, not validated predictions of market losses.
+## 1. Project Overview / Problem Statement & Approach
 
-## Problem
+Risk teams monitor large volumes of news and market commentary. The challenge is turning messy text into consistent risk signals that can feed a downstream workflow such as portfolio stress testing. This project addresses that problem by automating the ingestion of unstructured market news via GDELT and NewsAPI, extracting financial entities, computing sentiment with FinBERT (with a keyword fallback), classifying events using rule-based taxonomy, and scoring explainable risk impact. These structured signals are then mapped to a synthetic portfolio and used to run illustrative stress tests, demonstrating how news-driven events can affect portfolio value.
 
-Risk teams monitor large volumes of news and market commentary. The challenge is turning messy text into consistent risk signals that can feed a downstream workflow such as portfolio stress testing.
+The approach follows a pipeline architecture: NEWS / SOCIAL DATA → ingestion → preprocessing → entity extraction → financial sentiment → event classification → impact scoring → portfolio exposure mapping → stress test → dashboard review. All components are implemented as a FastAPI backend with a Streamlit frontend, relying on local demo data as fallback when live APIs are unavailable.
 
-## Solution
+## 2. Architecture & Tech Stack
 
-The project ingests articles from GDELT, NewsAPI, or local demo data, then runs:
-
-1. text cleanup
-2. company/entity extraction
-3. financial sentiment with FinBERT, with a keyword fallback
-4. event classification using transparent rules
-5. explainable risk impact scoring
-6. portfolio exposure mapping and stress testing
-7. dashboard review
-
-## Architecture
+**System design and data flow:**
 
 ```text
 NEWS / SOCIAL DATA
   -> ingestion
   -> preprocessing
   -> entity extraction
-  -> financial sentiment
-  -> event classification
-  -> impact scoring
+  -> financial sentiment (FinBERT / keyword fallback)
+  -> event classification (rule-based taxonomy)
+  -> explainable risk impact scoring
   -> structured risk signal
   -> portfolio exposure mapping
   -> stress test
   -> dashboard
 ```
 
-Main files:
+**Key frameworks, libraries, and AI/ML tools:**
 
-- `app/risk_engine.py` orchestrates the pipeline
-- `app/ingestion.py` handles GDELT, NewsAPI and local fallback
-- `app/sentiment.py` loads FinBERT or falls back to a deterministic keyword method
-- `app/events.py` contains the event taxonomy and rules
-- `app/impact.py` contains scoring weights and explanations
-- `app/stress_test.py` applies portfolio shocks
-- `dashboard/app.py` is the Streamlit app
-- `app/main.py` is the FastAPI service
+- **FastAPI** – REST API service (`app/main.py`)
+- **Streamlit** – Interactive dashboard (`dashboard/app.py`)
+- **Transformers / PyTorch** – FinBERT model for financial sentiment (`app/sentiment.py`)
+- **Pandas / NumPy** – Data manipulation and portfolio calculations
+- **Requests / Feedparser** – GDELT and RSS API integration (`app/ingestion.py`)
+- **Pydantic** – Request validation for API endpoints
+- **Scikit-learn** – Supporting ML utilities
+- **Environment management** – `.env` with `NEWSAPI_KEY` and `FINBERT_MODEL`
 
-## Data sources
+## 3. Dataset Used
 
-Supported sources:
+- **Source/nature**: The system ingests unstructured financial news from three sources: (1) GDELT public API, (2) NewsAPI (requires `NEWSAPI_KEY`), and (3) a local demo dataset (`data/sample_news.json`) containing 8 curated financial news articles. The local dataset serves as a fallback when live APIs fail or are rate-limited.
+- **Assumptions**: 
+  - GDELT article bodies are available via metadata/snippets; full-text scraping is not performed.
+  - FinBERT may require internet access for first-time model download; a keyword-based fallback is included for offline reliability.
+  - Entity extraction uses a mapping of 28 major public companies/tickers; companies outside this list are labeled "Market / General".
+  - Impact scores and stress-shock assumptions are explainable heuristics, not validated financial forecasts.
+  - The evaluation dataset (`data/evaluation/all-data.csv`, Financial PhraseBank) is separate from live ingestion and used only for external model evaluation.
 
-- GDELT public API
-- NewsAPI, using `NEWSAPI_KEY` in `.env`
-- `data/sample_news.json` local demo data
+## 4. Quickstart & Installation
 
-If a live source fails or returns nothing, the application falls back to local demo data and labels it as `Local demo data`.
+**Runtime:** Python 3.11 on macOS (tested with Python 3.9+.)
 
-## NLP approach
-
-Sentiment uses `ProsusAI/finbert` from HuggingFace. The score is:
-
-```text
-positive_probability - negative_probability
-```
-
-The output includes positive, neutral and negative probabilities. If the model cannot be downloaded or loaded, a simple keyword sentiment fallback is used. The dashboard shows which sentiment mode was used.
-
-Entity extraction uses a small company/ticker mapping for major public companies. This is intentionally simple for reliability under hackathon constraints.
-
-Event classification is rule-based using the required taxonomy:
-
-- Geopolitical
-- Macroeconomic
-- Credit Event
-- Merger/Acquisition
-- Product Launch
-- Regulatory
-- Earnings
-- Market Movement
-- Operational Risk
-- Other
-
-## Impact scoring methodology
-
-The `Explainable Risk Impact Score` is a deterministic score from 1 to 10. It combines:
-
-- event severity
-- sentiment magnitude
-- source reliability
-- entity relevance
-- high-risk financial terms
-
-Weights are centralized in `app/impact.py`. The score is not a trained market-impact model.
-
-## Portfolio stress methodology
-
-The synthetic portfolio is stored in `data/portfolio.csv` and totals $100M:
-
-- Corporate Loans: $25M
-- Investment Grade Bonds: $20M
-- High Yield Bonds: $15M
-- S&P 500 / Equity: $20M
-- Energy Equity: $10M
-- Interest Rate Swap: $10M
-
-Stress tests trigger automatically when `impact_score >= 7` by default. Scenario shocks are simplified assumptions such as equity, bond, loan and derivative shocks by event type. They are clearly labeled as illustrative prototype assumptions, not regulatory stress-test parameters.
-
-## Installation
+**Step-by-step commands:**
 
 ```bash
+git clone <your-repo-url>
+cd <repo-folder>
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env
+cp .env.example .env   # set NEWSAPI_KEY if desired
 ```
 
-`NEWSAPI_KEY` is optional. The demo works without it.
-
-## Running locally
-
-API:
+**Running the services:**
 
 ```bash
+# API (FastAPI)
 python -m uvicorn app.main:app --reload
-```
 
-Dashboard:
-
-```bash
+# Dashboard (Streamlit)
 streamlit run dashboard/app.py
-```
 
-Or run both with:
-
-```bash
+# Both together
 ./run.sh
 ```
 
-## API endpoints
+**API endpoints (base URL: `http://127.0.0.1:8000`):**
 
 - `GET /health`
-- `POST /analyze`
+- `POST /analyze` – `{ "text": "...", "source": "manual" | "newsapi" | "gdelt", ... }`
 - `GET /portfolio`
 - `POST /stress-test`
 - `GET /risk-signals`
 - `POST /demo/run`
 
-Example:
+## 5. Key Results & Domain Impact
 
-```bash
-curl -X POST http://127.0.0.1:8000/analyze \
-  -H 'Content-Type: application/json' \
-  -d '{"source":"manual","text":"Bank of America faces credit losses and downgrade risk."}'
-```
+**What the prototype demonstrates:**
 
-## Demo mode
+- End-to-end pipeline converting unstructured financial news into structured risk signals (entity, sentiment, event classification, impact score 1‑10).
+- Automatic stress‑test triggering when `impact_score >= 7`, showing before/after portfolio values, absolute and percentage loss, and per‑asset impact.
+- Visual portfolio impact chart and largest-loss contributor identification via Streamlit.
+- Working demo: the “Bank of America credit-loss” article from local data produces a credit event, impact score > 7, and triggers the stress test, illustrating the full workflow.
 
-Use the sidebar button `Run Demo Event` in Streamlit. It processes curated local articles from `data/sample_news.json`, selects a high-impact event, and shows the article, signal, explanation and stress test.
+**Why it matters from a use‑case standpoint:**
 
-A strong demo event is the Bank of America credit-loss article because it produces a credit event and triggers the portfolio stress workflow.
+- Risk teams receive vast amounts of market commentary; this prototype shows how NLP can distill that noise into a handful of explainable risk signals.
+- The structured signals can feed downstream workflows such as portfolio stress testing, scenario analysis, and monitoring of high‑impact events.
+- The modular architecture (ingestion → NLP → impact → stress test) is extensible: additional data sources, refined entity mapping, or calibrated shock tables can be swapped in without rewriting the core pipeline.
+- The hack‑prototype demonstrates that AI/NLP tools are accessible for risk‑management prototyping under hackathon constraints (synthetic portfolio, explainable heuristics, local‑first fallback).
 
-## Tests
+---
 
-```bash
-pytest
-```
+## Model Evaluation 
 
-## Assumptions and limitations
+**FinBERT** is a pretrained financial‑sentiment model from HuggingFace (`ProsusAI/finbert`). It produces a sentiment score as `positive_probability - negative_probability`, clipped to the range [-1, 1], along with probabilities for positive, neutral, and negative classes. The existing `app/sentiment.py` uses FinBERT by default, with a keyword‑based fallback for reliability when the model cannot be loaded.
 
-- Hackathon prototype built for local use on a laptop.
-- Live ingestion depends on external API availability.
-- GDELT article bodies are not fully scraped; the MVP uses available metadata/snippets.
-- FinBERT may need internet on first model download.
-- Entity extraction is mapping-based and will miss companies outside the list.
-- Impact score and stress shocks are explainable assumptions, not validated forecasts.
+**Evaluation dataset**: The Financial PhraseBank dataset (Kaggle, `ankurzing/sentiment-analysis-for-financial-news`, CC‑BY‑NC‑SA‑4.0) was downloaded and placed in `data/evaluation/all-data.csv`. It contains 4,845 financial news headlines labeled as positive, neutral, or negative, originally compiled by Malo et al. (2014). The dataset is **not** used for live ingestion or demo input; it is solely for external model evaluation.
 
-## Model Evaluation
-
-**FinBERT** is a pretrained financial-sentiment model from HuggingFace (`ProsusAI/finbert`). It produces a sentiment score as `positive_probability - negative_probability`, clipped to the range [-1, 1], along with probabilities for positive, neutral, and negative classes. The existing `app/sentiment.py` uses FinBERT by default, with a keyword-based fallback for reliability when the model cannot be loaded.
-
-**Evaluation dataset**: The Financial PhraseBank dataset (Kaggle, `ankurzing/sentiment-analysis-for-financial-news`, CC-BY-NC-SA-4.0) was downloaded and placed in `data/evaluation/all-data.csv`. It contains 4,845 financial news headlines labeled as positive, neutral, or negative, originally compiled by Malo et al. (2014). The dataset is **not** used for live ingestion or demo input; it is solely for external model evaluation.
-
-**Reported metrics** (evaluation run on full 4,845-sample dataset):
+**Reported metrics** (evaluation run on full 4,845‑sample dataset):
 - Overall accuracy: 0.889 (4,308 / 4,846)
-- Per-class performance:
+- Per‑class performance:
   - **Positive**: precision 0.810, recall 0.919, F1 0.861
   - **Neutral**: precision 0.961, recall 0.858, F1 0.907
   - **Negative**: precision 0.801, recall 0.969, F1 0.877
@@ -197,5 +127,5 @@ pytest
 - Better article body extraction for live sources.
 - More complete company/entity universe.
 - Calibrated impact scoring using historical events.
-- Sector-specific and geography-specific stress mappings.
+- Sector‑specific and geography‑specific stress mappings.
 - Persistent storage for signal history.
